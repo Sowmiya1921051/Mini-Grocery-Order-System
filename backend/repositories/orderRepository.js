@@ -6,7 +6,7 @@ const create = async (orderData, session = null) => {
 };
 
 const findAll = async () => {
-    return await Order.find().sort({ createdAt: -1 });
+    return await Order.find().sort({ createdAt: -1 }).limit(10);
 };
 
 module.exports = {

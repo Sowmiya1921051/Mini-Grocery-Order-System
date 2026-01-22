@@ -336,3 +336,43 @@ input:focus {
     grid-template-columns: 1fr;
   }
 }
+
+/* Order History Section */
+.order-history-section {
+  margin-top: 4rem;
+  margin-bottom: 4rem;
+}
+
+.order-history-section h2 {
+  margin-bottom: 1.5rem;
+  color: var(--white);
+  text-align: left;
+}
+
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.order-table th,
+.order-table td {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.order-table th {
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.05rem;
+}
+
+.order-table td {
+  color: var(--text-main);
+}
+
+.order-table tr:last-child td {
+  border-bottom: none;
+}
