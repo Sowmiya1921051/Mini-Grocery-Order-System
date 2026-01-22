@@ -3,6 +3,7 @@ import './App.css';
 
 function App() {
   const [products, setProducts] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [message, setMessage] = useState({ text: '', type: '' });
   const [loading, setLoading] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -12,6 +13,7 @@ function App() {
 
   useEffect(() => {
     fetchProducts();
+    fetchOrders();
   }, []);
 
   const fetchProducts = async () => {
@@ -22,6 +24,16 @@ function App() {
     } catch (error) {
       console.error('Error fetching products:', error);
       setMessage({ text: 'Error fetching products', type: 'error' });
+    }
+  };
+
+  const fetchOrders = async () => {
+    try {
+      const response = await fetch(`${API_URL}/orders`);
+      const data = await response.json();
+      setOrders(data);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
     }
   };
 
@@ -80,6 +92,7 @@ function App() {
       if (response.ok) {
         setMessage({ text: `Success! ${data.message}`, type: 'success' });
         fetchProducts(); // Refresh stock
+        fetchOrders();   // Refresh history
       } else {
         setMessage({ text: `Failed: ${data.message}`, type: 'error' });
       }
@@ -177,6 +190,38 @@ function App() {
             </div>
           ))}
         </div>
+
+        <section className="order-history-section">
+          <h2>Order History</h2>
+          <div className="card glass-card">
+            {orders.length === 0 ? (
+              <p>No orders placed yet.</p>
+            ) : (
+              <table className="order-table">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Product</th>
+                    <th>Qty</th>
+                    <th>Total</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {orders.map(order => (
+                    <tr key={order._id}>
+                      <td>{order._id.substring(order._id.length - 6).toUpperCase()}</td>
+                      <td>{products.find(p => p._id === order.productId)?.name || 'Unknown'}</td>
+                      <td>{order.quantity}</td>
+                      <td>${order.totalPrice.toFixed(2)}</td>
+                      <td>{new Date(order.createdAt).toLocaleString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </section>
       </main>
     </div>
   );

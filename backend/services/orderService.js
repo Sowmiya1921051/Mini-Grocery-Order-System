@@ -50,6 +50,11 @@ const placeOrder = async (productName, quantity) => {
     }
 };
 
+const getAllOrders = async () => {
+    return await orderRepository.findAll();
+};
+
 module.exports = {
-    placeOrder
+    placeOrder,
+    getAllOrders
 };

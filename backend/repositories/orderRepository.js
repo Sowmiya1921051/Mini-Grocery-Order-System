@@ -5,6 +5,11 @@ const create = async (orderData, session = null) => {
     return await order.save({ session });
 };
 
+const findAll = async () => {
+    return await Order.find().sort({ createdAt: -1 });
+};
+
 module.exports = {
-    create
+    create,
+    findAll
 };

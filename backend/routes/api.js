@@ -12,4 +12,7 @@ router.post('/products', productController.createProduct);
 // 3️⃣ POST /orders
 router.post('/orders', orderController.createOrder);
 
+// 4️⃣ GET /orders
+router.get('/orders', orderController.getOrders);
+
 module.exports = router;

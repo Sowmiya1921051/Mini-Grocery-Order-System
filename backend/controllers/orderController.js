@@ -17,6 +17,16 @@ const createOrder = async (req, res) => {
     }
 };
 
+const getOrders = async (req, res) => {
+    try {
+        const orders = await orderService.getAllOrders();
+        res.status(200).json(orders);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
 module.exports = {
-    createOrder
+    createOrder,
+    getOrders
 };
