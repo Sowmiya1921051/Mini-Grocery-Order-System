@@ -22,7 +22,8 @@ const create = async (productData) => {
 };
 
 const findByName = async (name) => {
-    return await Product.findOne({ name: { $regex: new RegExp(`^${name}$`, 'i') } });
+    const trimmedName = name.trim();
+    return await Product.findOne({ name: { $regex: new RegExp(`^${trimmedName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') } });
 };
 
 const updateProduct = async (id, productData) => {

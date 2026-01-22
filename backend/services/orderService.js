@@ -17,7 +17,7 @@ const placeOrder = async (productName, quantity) => {
         let order;
 
         const performOrderAction = async (activeSession) => {
-            // ● Check if the product exists
+            // ● Check if the product exists by Name
             const product = await productRepository.findByName(productName);
             if (!product) throw new Error('Product not found');
 

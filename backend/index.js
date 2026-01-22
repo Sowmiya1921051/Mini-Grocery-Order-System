@@ -14,7 +14,11 @@ app.use(express.json());
 app.use('/api', apiRoutes);
 
 // Connect to MongoDB and Start Server
-connectDB().then(() => {
+connectDB().then(async () => {
+    const Product = require('./models/product');
+    const products = await Product.find({}, 'name');
+    console.log('Available Products in DB:', products.map(p => p.name));
+
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
     });
