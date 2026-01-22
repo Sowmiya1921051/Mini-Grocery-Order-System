@@ -1,56 +1,90 @@
-# Mini Grocery Order System (MongoDB Version)
+# Grocery 🛒 Hub - Mini Grocery Order System
 
-This project is a full-stack grocery ordering system built with **Node.js (Express)**, **React.js**, and **MongoDB** using **Mongoose ODM**.
+A premium, full-stack grocery management and ordering system built with React, Node.js, and MongoDB. This application features smart product restocking, name-based ordering for durability, and a transactional order processing system.
 
-## 📁 Folder Structure
+## ✨ Key Features
 
-### Backend
-Strict adherence to the required structure:
-```text
-backend/
-├── config/         # MongoDB connection configuration
-├── controllers/    # Request/Response handling
-├── models/         # Mongoose Schema definitions
-├── repositories/   # DB access logic using Mongoose Models
-├── routes/         # Express API Route definitions (Only 2 APIs)
-├── services/       # ALL Business Logic & Transaction Handling
-├── .env            # Environment configurations
-├── index.js        # Entry point
-└── seed.js         # MongoDB seed script
+-   **Premium Glassmorphic UI**: A modern, dark-themed interface with smooth animations and responsive design.
+-   **Smart Add/Restock**: Intelligent product management. If you add a product with an existing name, the system automatically updates its price and increments its stock instead of creating duplicates.
+-   **Name-Based Ordering**: Orders are identified by product names rather than internal IDs, making the system more robust for users and resistant to database changes.
+-   **Adaptive Transactions**: Supports full MongoDB transactions for atomic stock reduction. Automatically detects and falls back to safe atomic operations on standalone MongoDB instances (common for local development).
+-   **Order History**: Real-time order tracking showing the last 10 orders with detailed timestamps and totals.
+
+## 🛠 Tech Stack
+
+-   **Frontend**: React (Vite), Vanilla CSS (Custom Variable System)
+-   **Backend**: Node.js, Express
+-   **Database**: MongoDB (Mongoose)
+-   **State Management**: React Hooks (useState, useEffect)
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+-   Node.js (v18+)
+-   MongoDB (Local instance or Atlas)
+
+### 1. Setup Backend
+
+Navigate to the backend directory and install dependencies:
+
+```bash
+cd backend
+npm install
 ```
 
-## 🔌 API Explanation (Strictly 2 APIs)
+Create a `.env` file in the `backend` folder:
 
-### 1. GET `/api/products`
-- **Description**: Fetches all available products from MongoDB.
-- **Response**: Array of product objects containing `_id`, `name`, `price`, and `stock`.
+```env
+PORT=5000
+MONGODB_URI=your_mongodb_connection_string
+DB_TRANSACTIONS=true
+```
 
-### 2. POST `/api/orders`
-- **Description**: Places a grocery order.
-- **Body**: `{ productId: string, quantity: number }`
-- **Logic**: Handled in a single MongoDB transaction in `orderService.js`.
+Seed the database with initial products:
 
-## 🧠 Business Logic & Transactions
+```bash
+npm run seed
+```
 
-### Where Business Logic Lives
-All business logic is strictly encapsulated within the **`services/`** layer (`orderService.js`). 
-- **Controller**: Only handles request parameters and sends the final response.
-- **Repository**: Decouples Mongoose operations from business logic.
-- **Service**: Manages the life cycle of the transaction and business rules (stock check, etc.).
+Start the server:
 
-### How MongoDB Transaction Works
-We use **MongoDB Sessions** to ensure ACID compliance:
-1. A session is started via `mongoose.startSession()`.
-2. A transaction is initiated within that session.
-3. All operations (fetching product, updating stock, saving order) are associated with that session.
-   - Update `backend/.env` with your connection string.
-   - **Local Standalone Mongo**: Set `DB_TRANSACTIONS=false` if you are not using a Replica Set (avoids "Transaction numbers" error).
-   - **Production/Replica Set**: Set `DB_TRANSACTIONS=true` to enable full ACID atomicity.
-4. **Commit/Abort**: If successful, `commitTransaction()` is called. On any failure (like `Insufficient stock`), `abortTransaction()` is called to revert changes.
+```bash
+npm start
+```
 
-## 🚀 How to Run
+### 2. Setup Frontend
 
-1. **Database**: High-level MongoDB connection string is in `.env`. Ensure your local MongoDB is running.
-2. **Seed Data**: Run `node seed.js` inside the `backend/` folder to populate the products.
-3. **Backend**: Run `npm start`.
-4. **Frontend**: Run `npm run dev` in the `frontend/` folder.
+Navigate to the frontend directory and install dependencies:
+
+```bash
+cd frontend
+npm install
+```
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+The application will be available at `http://localhost:5173`.
+
+## 📡 API Endpoints
+
+### Products
+- `GET /api/products`: Retrieve all products.
+- `POST /api/products`: Add a new product or restock an existing one (includes price update).
+
+### Orders
+- `POST /api/orders`: Place an order using `productName` and `quantity`.
+- `GET /api/orders`: Retrieve the last 10 orders.
+
+## 🛡 Design & Engineering Decisions
+
+-   **Atomic Updates**: The system uses `$inc` with `$gte` filters to ensure stock never goes negative, even during race conditions.
+-   **Regex Safety**: Product name lookups use sanitized regex to prevent injection and handle special characters like parentheses safely.
+-   **Standalone Fallback**: Designed to work out-of-the-box on standard MongoDB installs while being production-ready for Replica Sets/Sharded clusters.
+
+---
+*Created as part of the Internshalla Web Development Assignment.*
